@@ -185,6 +185,7 @@ Route::group([
      *  6. Register new User
      */
     Route::post('/register' , [UserController::class, 'register']);
+    
 });
 
 
