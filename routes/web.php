@@ -26,4 +26,10 @@ Route::get('/', function () {
 //
 //Route::post('/sendNot' ,[\App\Http\Controllers\API\User\UserController::class,'register'])->name('register');
 
-Route::get('delete/{id}', [AdminController::class,'deleteAdmin']);
+//Route::get('delete/{id}', [AdminController::class,'deleteAdmin']);
+Route::get('course/{id}', [\App\Http\Controllers\CourseController::class,'index']);
+Route::get('teacher/{id}', [\App\Http\Controllers\CourseController::class,'courses']);
+Route::get('course.info/{id}', [\App\Http\Controllers\CourseController::class,'fullCourseInfo']);
+Route::get('user/course/{id}', [\App\Http\Controllers\CourseController::class,'userCourses']);
+
+

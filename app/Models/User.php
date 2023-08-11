@@ -49,8 +49,28 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Admin::class);
     }
 
+    /**
+     *  the event that Created by a user
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function events(){
         return $this->hasMany(Event::class);
+    }
+
+    /**
+     *  the name of course/s that user has joined in it
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function courses(){
+        return $this->belongsToMany(Course::class, 'user_course_pivot');
+    }
+
+    /**
+     *  the name of course/s that created by a user
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tracherCoursesName(){
+        return $this->hasMany(Course::class,'teacher_id');
     }
 
 

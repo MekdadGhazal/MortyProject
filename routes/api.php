@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\API\Admin\AdminController;
 use App\Http\Controllers\API\User\UserController;
-use App\Http\Controllers\Controller\AuthController;
+//use App\Http\Controllers\Controller\AuthController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +48,11 @@ use Illuminate\Support\Facades\Route;
  *  10. Event List
  *  11. Show Events for User by ID (Owner JUST)
  *  12. Delete Admin
+ *  13. GET courses' name that joined by user
+ *  14. GET the Full Information of course
+ *  15. GET information of course/s that created by a Teacher [user] using user_id
+ *  16. GET users' name that joined to course with course_id
+ *  17. Create a course
  *
  *  note that ::
  *  each route should start with [api/admin]
@@ -67,7 +74,7 @@ Route::group([
 
     /**
      *  3. Verify User To make it enter The Website
-     *  and the notifications of register will be readed in all Admins
+     *  and the notifications of register will be read by all Admins
      */
     Route::post('/user/verify/{id}',[AdminController::class,'verifyUser']);
 
@@ -117,17 +124,50 @@ Route::group([
     /**
      *  10. Event List
      */
-    Route::get('/events', [\App\Http\Controllers\EventController::class, 'getData']);
+    Route::get('/events', [EventController::class, 'getData']);
 
     /**
      *  11. Show Events for User by ID
      */
-    Route::get('/events/{id}', [\App\Http\Controllers\EventController::class, 'getUserData'])->middleware('owner.check');
+    Route::get('/events/{id}', [EventController::class, 'getUserData'])->middleware('owner.check');
 
     /**
      *  12. Delete Admin (JUST Owner)
      */
-    Route::get('delete/{id}', [AdminController::class,'deleteAdmin'])->middleware(middleware: 'owner.check');
+    Route::get('/delete/{id}', [AdminController::class,'deleteAdmin'])->middleware(middleware: 'owner.check');
+
+    /**
+     *  13. GET courses' name that joined by user with user_id
+     */
+    Route::get('/user/course/{id}', [CourseController::class,'userCourses']);
+
+    /**
+     *  14. GET the Full Information of course:
+     *      1) the course Info
+     *      2) created by
+     *      3) the members
+     */
+    Route::get('/course.info/{id}', [CourseController::class,'fullCourseInfo']);
+
+    /**
+     *  15. GET information of course/s that created by a Teacher [user] using user_id
+     */
+    Route::get('/teacher/{id}', [CourseController::class,'courses']);
+
+    /**
+     *  16. GET users' name that joined to course with course_id
+     */
+    Route::get('/course/{id}', [CourseController::class,'index']);
+
+    /**
+     *  17.Insert a course
+     */
+    Route::post('/course/insert',[CourseController::class,'insert']);
+
+    /**
+     *  17.Update a course
+     */
+    Route::post('/course/edit/{id}',[CourseController::class,'edit']);
 
 });
 
@@ -185,7 +225,11 @@ Route::group([
      *  6. Register new User
      */
     Route::post('/register' , [UserController::class, 'register']);
-    
+
+    /**
+     *  7. knowing the Course that joined
+     */
+    Route::get('/course/{id}', [CourseController::class,'userCourses']);
 });
 
 
