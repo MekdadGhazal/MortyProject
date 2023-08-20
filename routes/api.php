@@ -53,6 +53,8 @@ use Illuminate\Support\Facades\Route;
  *  15. GET information of course/s that created by a Teacher [user] using user_id
  *  16. GET users' name that joined to course with course_id
  *  17. Create a course
+ *  18. Update a course info
+ *  19. Add Videos To course using course id
  *
  *  note that ::
  *  each route should start with [api/admin]
@@ -165,9 +167,14 @@ Route::group([
     Route::post('/course/insert',[CourseController::class,'insert']);
 
     /**
-     *  17.Update a course
+     *  18.Update a course Info
      */
     Route::post('/course/edit/{id}',[CourseController::class,'edit']);
+
+    /**
+     *  19. add Videos To course using course id
+     */
+    Route::post('/course/{id}/add-video',[CourseController::class,'addVideo']);
 
 });
 
@@ -182,6 +189,14 @@ Route::group([
  *  4. Delete Account
  *  5. Search for Other Users
  *  6. register
+ *  7. knowing the Course that joined
+ *  8. Get Information about course
+ *  9. Get Notifications about Courses // Not work
+ *  10. Add a Comment on Course
+ *  11. Delete a Comment
+ *  12. Show all Comments
+ *  13.add Replay on comment
+ *  14.Show all replies for comment
  *
  *  note that ::
  *  each route should start with [api/user]
@@ -230,6 +245,43 @@ Route::group([
      *  7. knowing the Course that joined
      */
     Route::get('/course/{id}', [CourseController::class,'userCourses']);
+
+    /**
+     *  8. Get Information about course
+     */
+    Route::get('/course/info/{id}' , [CourseController::class,'getData']);
+
+    /**
+     *  9. Get Notifications about Courses
+     */
+    Route::get('/course/notify' , [CourseController::class,'notifyMe'])->middleware(middleware: 'id.check');
+
+    /**
+     *  10. Comment on Course
+     */
+    Route::post('/course/{id}/insert-comment' , [\App\Http\Controllers\CourseCommentController::class ,'insert']);
+
+    /**
+     *  11. Delete a Comment
+     */
+    Route::post('/course/{id}/destroy-comment' , [\App\Http\Controllers\CourseCommentController::class ,'destroy']);
+
+    /**
+     *  12. Show all Comments
+     */
+    Route::get('/course/{id}/comments' , [\App\Http\Controllers\CourseCommentController::class ,'index']);
+
+    /**
+     *  13.add Replay on comment
+     */
+    Route::post('/course/replay-comment/{id}' , [\App\Http\Controllers\CourseCommentController::class ,'insertReplay']);
+
+    /**
+     *  14.Show all replies for comment
+     */
+    Route::get('/course/replay-comment/{id}' , [\App\Http\Controllers\CourseCommentController::class ,'replies']);
+
+
 });
 
 

@@ -1,3 +1,10 @@
+
+
+{{--    ini_set('upload_max_filesize' ,'100M');--}}
+{{--    ini_set('post_max_size' ,'100M');--}}
+{{--    phpinfo();--}}
+
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>

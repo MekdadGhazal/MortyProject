@@ -74,6 +74,14 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
+    public function comment(){
+        return $this->hasMany(CourseComment::class);
+    }
+    public function Replay(){
+        return $this->hasMany(CourseCommentReplay::class);
+    }
+
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -90,4 +98,8 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     }
+
+
+
+
 }

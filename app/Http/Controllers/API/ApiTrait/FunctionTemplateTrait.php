@@ -187,4 +187,18 @@ trait FunctionTemplateTrait
         ];
         return $this->successResponse($data);
     }
+
+    /**
+     * @param $request
+     * @param $key
+     * @param $option
+     * @param $storeIn
+     * @return mixed
+     */
+    public function upload($request, $inputFileName, $optionFileSystem, $storeIn = null): mixed
+    {
+        $file = $request->file($inputFileName)->getClientOriginalName();
+        $path = $request->file($inputFileName)->storeAs($storeIn ,$file, $optionFileSystem);
+        return $path;
+    }
 }

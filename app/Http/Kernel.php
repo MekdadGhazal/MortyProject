@@ -67,5 +67,7 @@ class Kernel extends HttpKernel
         'admin.check' => \App\Http\Middleware\AdminCheck::class,
         'owner.check' => \App\Http\Middleware\OwnerCheck::class,
         'verify.check' => \App\Http\Middleware\VerifyUserChech::class,
+        'id.check' => \App\Http\Middleware\NotifyMiddle::class,
+
     ];
 }

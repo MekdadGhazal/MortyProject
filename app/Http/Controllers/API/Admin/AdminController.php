@@ -146,13 +146,16 @@ class AdminController extends Controller
 
     public function userNotify(){
         $user_id = User::find(auth()->user()->id);
-//        $id = 8 ;
-//        $user_id = User::find($id);
-        $unread_notifications_count = $user_id->unreadnotifications->count();
-        $notifications_count =  $user_id->notifications->count();
-        $unread_notifications = $user_id->unreadnotifications;
-        $readed_notifications = $user_id->notifications
-            ->where('read_at','!=' , null);
+        $unread_notifications_count =
+            $user_id->unreadnotifications->where('type' ,'App\Notifications\CreateUser')->count();
+        $notifications_count =
+            $user_id->notifications->where('type' ,'App\Notifications\CreateUser')->count();
+        $unread_notifications =
+            $user_id->unreadnotifications->where('type' ,'App\Notifications\CreateUser');
+        $readed_notifications =
+            $user_id->notifications
+                ->where('type' ,'App\Notifications\CreateUser')
+                ->where('read_at','!=' , null);
 
         $data = [
             'notification_count' => $notifications_count,
