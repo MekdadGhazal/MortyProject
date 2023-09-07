@@ -25,8 +25,7 @@ class CourseCommentController extends Controller
             if(Course::find($id)->comments->count()){
                 return $this->successResponse(
                     CourseCommentResource::collection(
-                        CourseComment::where('course_id',$id)->get())
-                );
+                        CourseComment::where('course_id',$id)->get()));
             }else{
                 return $this->processResponse('there is no comment yet!');
             }
@@ -102,7 +101,7 @@ class CourseCommentController extends Controller
      */
     public function insertReplay(Request $request , $comment_id){
         $validator = Validator::make($request->all(), [
-            'content' => 'required|string',
+            'repaly' => 'required|string',
         ]);
         if($validator->fails()){
             // status = 400
@@ -111,7 +110,7 @@ class CourseCommentController extends Controller
         $comment = CourseCommentReplay::create([
             'comment_id' => $comment_id,
             'user_id' => auth()->user()->id,
-            'content' => $request->content,
+            'content' => $request->repaly,
         ]);
         $replay_count = CourseComment::where('id' , $comment_id)->get('replay');
         CourseComment::where('id' , $comment_id)->update([

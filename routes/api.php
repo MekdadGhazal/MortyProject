@@ -61,7 +61,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::group([
-    'middleware' => ['auth:api', 'admin.check'],
+//    'middleware' => ['auth:api', 'admin.check'],
     'prefix' => 'admin',
 ] ,function (){
     /**
@@ -140,6 +140,7 @@ Route::group([
 
     /**
      *  13. GET courses' name that joined by user with user_id
+     *  معرفة اسماء الكورسات التي ينضم اليها يوزر باستخدام الid
      */
     Route::get('/user/course/{id}', [CourseController::class,'userCourses']);
 
@@ -159,7 +160,7 @@ Route::group([
     /**
      *  16. GET users' name that joined to course with course_id
      */
-    Route::get('/course/{id}', [CourseController::class,'index']);
+    Route::get('/course/{id}',[CourseController::class,'findCourse']);
 
     /**
      *  17.Insert a course
@@ -169,12 +170,12 @@ Route::group([
     /**
      *  18.Update a course Info
      */
-    Route::post('/course/edit/{id}',[CourseController::class,'edit']);
+    Route::post('/course/edit',[CourseController::class,'edit']);
 
     /**
      *  19. add Videos To course using course id
      */
-    Route::post('/course/{id}/add-video',[CourseController::class,'addVideo']);
+    Route::post('/course/add-video',[CourseController::class,'addVideo']);
 
 });
 
@@ -189,7 +190,7 @@ Route::group([
  *  4. Delete Account
  *  5. Search for Other Users
  *  6. register
- *  7. knowing the Course that joined
+ *  7. knowing the Course that joined //need to remove id and edition
  *  8. Get Information about course
  *  9. Get Notifications about Courses // Not work
  *  10. Add a Comment on Course
@@ -197,6 +198,8 @@ Route::group([
  *  12. Show all Comments
  *  13.add Replay on comment
  *  14.Show all replies for comment
+ *  15.See all video of course
+ *  16.Get all Courses
  *
  *  note that ::
  *  each route should start with [api/user]
@@ -254,7 +257,8 @@ Route::group([
     /**
      *  9. Get Notifications about Courses
      */
-    Route::get('/course/notify' , [CourseController::class,'notifyMe'])->middleware(middleware: 'id.check');
+    Route::get('/course/notifications/{id}' , [CourseController::class,'notifyMe']);
+//        ->middleware(middleware: 'notify.check');
 
     /**
      *  10. Comment on Course
@@ -264,7 +268,7 @@ Route::group([
     /**
      *  11. Delete a Comment
      */
-    Route::post('/course/{id}/destroy-comment' , [\App\Http\Controllers\CourseCommentController::class ,'destroy']);
+    Route::delete('/course/{id}/destroy-comment' , [\App\Http\Controllers\CourseCommentController::class ,'destroy']);
 
     /**
      *  12. Show all Comments
@@ -281,9 +285,14 @@ Route::group([
      */
     Route::get('/course/replay-comment/{id}' , [\App\Http\Controllers\CourseCommentController::class ,'replies']);
 
+    /**
+     *  15.See all video of course
+     */
+    Route::get('/course/{id}/videos',[CourseController::class,'showVideos']);
+
+    /**
+     *  16. all courses
+     */
+    Route::get('/courses', [CourseController::class,'index']);
 
 });
-
-
-
-

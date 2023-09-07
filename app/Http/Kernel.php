@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
         'owner.check' => \App\Http\Middleware\OwnerCheck::class,
         'verify.check' => \App\Http\Middleware\VerifyUserChech::class,
         'id.check' => \App\Http\Middleware\NotifyMiddle::class,
+        'notify.check'=>\App\Http\Middleware\NotificationsMiddle::class,
 
     ];
 }

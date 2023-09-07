@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserNotify;
 use App\Http\Resources\UserResource;
 use App\Models\Admin;
+use App\Models\Course;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;

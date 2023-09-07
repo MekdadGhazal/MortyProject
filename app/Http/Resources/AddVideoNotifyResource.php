@@ -16,6 +16,7 @@ class AddVideoNotifyResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' =>$this->id,
             'title' => $this->data['title'],
             'description' => $this->data['description'],
             'teacher_info' =>new UserResource(User::find($this->data['teacher_id'])),
