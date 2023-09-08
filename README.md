@@ -7,6 +7,8 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+<p style="text-align: center"><a href="#start">Start The Project</a></p>
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
@@ -64,3 +66,30 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## Start the Project
+<style>
+#start li{
+margin-bottom:20px;
+}#danger{
+font-size:12px
+}
+</style>
+To Start The project, you should first [Download](https://github.com/MekdadGhazal/MortyProject/) the project
+and then follow this commands:
+<ul id="start" style="list-style:decimal">
+<li>Unzip the Project.</li>
+<li>Save the Project in folder as <b>Online-Courses</b></li>
+<li>Go to folder that contain the project and Run the Command line or use the command: <b>cd Online-Courses</b></li>
+<li><p>copy the <code>.env.example</code> and change its name to <code>.env</code> and change the <code>DB_DATABASE=laravel</code> to <code>DB_DATABASE=api_project</code></p></li>
+<li><p>To Generate a Key: </p><code><b>php artisan key:generate</b></code></li>
+<li><p>To install important package: </p><code><b>composer install</b></code></li>
+<li><p>To migrate the Database: </p><code><b>php artisan migrate</b></code><p id="danger" style="color: red">Note that: you should have a Database with name "api-project" in your server</p></li>
+<li><p>To Seed your DB with initial data: (option)</p><code><b>php artisan db:seed</b></code></li>
+<li><p>To Run the Server:</p><code><b>php artisan serve</b></code></li>
+</ul>
+
+### To More information contact us on the following:
+#### [facebook](https://www.facebook.com/mekdad.ghazal.7/) or [twitter](https://twitter.com/mekdad_gh) or [Whatsapp](https://wa.me/qr/T7IL66VMKKRTE1)
+#### You can also follow me on : [instagram](https://www.instagram.com/itz_mekdad/)
