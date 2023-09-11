@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\Courses;
 
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseCommentResource;
 use App\Models\Course;
 use App\Models\CourseComment;

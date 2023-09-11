@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\Courses;
 
 use App\Http\Controllers\API\ApiTrait\FunctionTemplateTrait;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\AddVideoNotifyResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
@@ -13,10 +14,12 @@ use App\Models\Video;
 use App\Notifications\AddVideo;
 use App\Notifications\CreateUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+
 
 class CourseController extends Controller
 {
@@ -236,20 +239,30 @@ class CourseController extends Controller
     /**
      *  Get All notifications about courses
      */
-    public function notifyMe(){
-        $user_id = User::find(auth()->user()->id);
-        $unread_notifications_count =
-            $user_id->unreadnotifications->where('type' ,'App\Notifications\AddVideo')->count();
-        $unread_notifications =
-            $user_id->unreadnotifications->where('type' ,'App\Notifications\AddVideo');
-        $readed_notifications =
-            $user_id->notifications->where('type' ,'App\Notifications\AddVideo')
-                ->where('read_at','!=' , null);
+    public function notifyMe()
+    {
+//        $user_id = Auth::id();
+        $user_id = 3;
+        $unread_notifications_count = User::find($user_id)
+            ->unreadnotifications
+            ->where('type', 'App\Notifications\AddVideo')
+            ->count();
+
+        $unread_notifications = User::find($user_id)
+            ->unreadnotifications
+            ->where('type', 'App\Notifications\AddVideo');
+
+        $readed_notifications = User::find($user_id)
+            ->notifications
+            ->where('type', 'App\Notifications\AddVideo')
+            ->whereNotNull('read_at');
+
         $data = [
             'unread_notifications_count' => $unread_notifications_count,
             'unread_notifications' => AddVideoNotifyResource::collection($unread_notifications),
             'readed_notifications' => AddVideoNotifyResource::collection($readed_notifications),
         ];
+
         return $this->successResponse($data);
     }
 
@@ -281,5 +294,41 @@ class CourseController extends Controller
             return $this->errorValidateResponse("the ");
         }
         //        return '<video src='. $url[0].' controls loop autoplay></video>';
+    }
+
+    /**
+     *  Search for courses using request
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search(Request $request)
+    {
+        try{
+            $users = User::where('name','LIKE', '%' . $request->search . '%')
+                ->orwhere ('email','LIKE', '%' . $request->search . '%')
+                ->orwhere ('created_at', 'LIKE','%' . $request->search . '%')
+                ->get();
+            $id = [];
+            $i =0 ;
+            foreach ($users as $user){
+                $id[$i] = $user->id;
+                $i++;
+            }
+            $search = Course::where('title','LIKE', '%' . $request->search . '%')
+                ->orwhere ('description','LIKE', '%' . $request->search . '%')
+                ->orwhere ('created_at', 'LIKE','%' . $request->search . '%')
+                ->orWhereIn('teacher_id', $id) // Search for teacher_id in the $id array
+                ->get();
+
+            $result = [
+                'courses' => $search,
+                'user' => $users,
+            ];
+            return $this->successResponse($result);
+
+        }catch (\Exception $e){
+            return $this->apiResponse($e, 500 ,'Bad Request');
+        }
+
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\ApiTrait;
 
-use App\Http\Controllers\EventController;
 use App\Http\Resources\UserResource;
 use App\Models\Admin;
 use App\Models\Event;

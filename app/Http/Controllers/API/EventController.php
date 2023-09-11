@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\API\ApiTrait\ResponseTrait;
+use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Http\Controllers\API\ApiTrait\ResponseTrait;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
