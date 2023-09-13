@@ -40,28 +40,24 @@ trait FunctionTemplateTrait
      */
     public function searchByModel($model, $request): \Illuminate\Http\JsonResponse
     {
-        $search = User::where('name','LIKE', '%' . $request->search . '%')
-            ->orwhere ('email','LIKE', '%' . $request->search . '%')
-            ->orwhere ('created_at', 'LIKE','%' . $request->search . '%')
+        $search = User::where('name', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('email', 'LIKE', '%' . $request->search . '%')
+            ->orWhere('created_at', 'LIKE', '%' . $request->search . '%')
             ->get();
-        if ($model == 'App\\Models\\User'){
+
+        if ($model == 'App\\Models\\User') {
             $search = UserResource::collection($search);
-            return $this->apiResponse($search, 201, 'ok');
-        } else{
-            $admins = Admin::get('user_id');
-            $mat = [];
-            $i = 0;
-            foreach ($search as $user){
-                foreach ($admins as $id){
-                    if($user->id ==  $id->user_id){
-                        $mat[$i] = new UserResource($user);
-                        $i++;
-                        break;
-                    }
-                }
-            }
-            return $this-> apiResponse($mat, 201, 'ok');
+        } else {
+            $admins = Admin::pluck('user_id')->toArray();
+            $search = $search->filter(
+                function ($user) use ($admins) {
+                    return in_array($user->id, $admins);
+            })->map(function ($user) {
+                return new UserResource($user);
+            });
         }
+
+        return $this->apiResponse($search, 200, 'ok');
     }
 
     /**

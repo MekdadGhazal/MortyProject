@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\API\ApiTrait\FunctionTemplateTrait;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
+use App\Http\Controllers\API\Courses\CourseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserNotify;
 use App\Http\Resources\UserResource;
@@ -21,11 +22,38 @@ class AdminController extends Controller
     use FunctionTemplateTrait;
 
     public function index(){
-        return User::get() ? $this->successResponse(UserResource::collection(User::get())) : $this->errorResponse();
+        try{
+            return $this->successResponse(UserResource::collection(User::where('verify','!=',0)->get()));
+        }catch (\Exception $e){
+            return $this->errorResponse();
+        }
     }
 
-    public function getUser($id){
-        return User::find($id) ? $this->successResponse(new UserResource(User::find($id))) : $this->errorResponse();
+    public function getUser($id)
+    {
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return $this->errorResponse();
+            }
+
+            $courses = new CourseController();
+            $lists = $courses->userCourses($id);
+
+            $data = [
+                'user' => new UserResource($user),
+                'joinedCourses' => $lists
+            ];
+
+            if ($user->admin) {
+                $create = Course::where('teacher_id', $id)->count() ? Course::where('teacher_id', $id)->get() : 'No Created course yet.';
+                $data['createdCourses'] = $create;
+            }
+
+            return $this->successResponse($data);
+        } catch (\Exception $e) {
+            return $this->errorResponse();
+        }
     }
 
     public function verifyUser($id){

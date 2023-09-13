@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\Admin\AdminController;
+use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,4 +47,4 @@ Route::post('/rep', [
 ])->name('replay');
 
 Route::get('/course/notify' , [\App\Http\Controllers\CourseController::class,'notifyMe']);
-
+//Route::get('/new',[UserController::class,'Registeration']);

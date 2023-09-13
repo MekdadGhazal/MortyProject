@@ -6,6 +6,7 @@ use App\Http\Controllers\API\ApiTrait\FunctionTemplateTrait;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AddVideoNotifyResource;
+use App\Http\Resources\CourseCommentResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
 use App\Models\Event;
@@ -29,8 +30,19 @@ class CourseController extends Controller
      *  Get all courses available
      * @return mixed
      */
-    public function index(){
-        return Course::get() ? $this->successResponse(Course::get()) : $this->errorResponse();
+    public function index()
+    {
+        $courses = Course::get();
+
+        $data = [];
+        foreach ($courses as $course) {
+            $teacher = User::find($course->teacher_id);
+            $data[] = [
+                'course' => $course,
+                'teacher' => new UserResource($teacher),
+            ];
+        }
+        return $this->successResponse($data);
     }
 
     /**
@@ -82,9 +94,11 @@ class CourseController extends Controller
     public function userCourses($id){
         if($user = User::find($id)){
             if($user->courses->count()){
-                return $this->successResponse(User::find($id)->courses);
+                return User::find($id)->courses;
+//                return $this->successResponse(User::find($id)->courses);
             }
-            return $this->processResponse('The user has not joined to any course yet');
+            return 'Not joined to any course yet.';
+//            return $this->processResponse('The user has not joined to any course yet');
         }
         return $this->errorResponse();
     }
@@ -272,7 +286,34 @@ class CourseController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function getData($id){
-        return Course::find($id)? $this->successResponse(Course::find($id)) : $this->errorResponse();
+        try {
+            if(! $course = Course::find($id)){
+                return $this->errorResponse();
+            }
+
+            $commentsController = new CourseCommentController();
+            $commentsResponse = $commentsController->index($id);
+
+            foreach ($commentsResponse as $comment_){
+                $comments[]  = $comment_;
+            }
+            $teacher = new  UserResource(User::find($course->teacher_id));
+            foreach ($this->showVideos($id) as $video){
+                $videos[] = $video;
+            }
+//            $videos = $this->showVideos($id);
+
+            $data = [
+                'course' => $course,
+                'teacher' => $teacher,
+                'comments'  => $comments[1]['data'],
+                'video' => $videos[1]['data']
+            ];
+
+            return $this->successResponse($data);
+        }catch (\Exception $e){
+            return $e;
+        }
     }
 
 
@@ -291,7 +332,7 @@ class CourseController extends Controller
             return $this->successResponse($url);
         }
         else{
-            return $this->errorValidateResponse("the ");
+            return $this->errorValidateResponse("the course has not any video yet");
         }
         //        return '<video src='. $url[0].' controls loop autoplay></video>';
     }
@@ -304,31 +345,26 @@ class CourseController extends Controller
     public function search(Request $request)
     {
         try{
-            $users = User::where('name','LIKE', '%' . $request->search . '%')
-                ->orwhere ('email','LIKE', '%' . $request->search . '%')
-                ->orwhere ('created_at', 'LIKE','%' . $request->search . '%')
+            $search = Course::where('title', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('description', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('created_at', 'LIKE', '%' . $request->search . '%')
                 ->get();
-            $id = [];
-            $i =0 ;
-            foreach ($users as $user){
-                $id[$i] = $user->id;
-                $i++;
-            }
-            $search = Course::where('title','LIKE', '%' . $request->search . '%')
-                ->orwhere ('description','LIKE', '%' . $request->search . '%')
-                ->orwhere ('created_at', 'LIKE','%' . $request->search . '%')
-                ->orWhereIn('teacher_id', $id) // Search for teacher_id in the $id array
+
+            $id = $search->pluck('teacher_id')->toArray();
+
+            $suggestion = Course::whereNotIn('id', $search->pluck('id'))
+                ->whereIn('teacher_id', $id)
                 ->get();
 
             $result = [
-                'courses' => $search,
-                'user' => $users,
+                'result' => $search,
+                'suggestion' => $suggestion
             ];
+
             return $this->successResponse($result);
 
         }catch (\Exception $e){
             return $this->apiResponse($e, 500 ,'Bad Request');
         }
-
     }
 }

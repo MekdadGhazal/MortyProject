@@ -64,7 +64,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::group([
-    'middleware' => ['auth:api', 'admin.check'],
+//    'middleware' => ['auth:api', 'admin.check'],
     'prefix' => 'admin',
 ] ,function (){
     /**
@@ -179,6 +179,12 @@ Route::group([
      *  19. add Videos To course using course id
      */
     Route::post('/course/add-video',[CourseController::class,'addVideo']);
+
+    /**
+     *  20.New Registration
+     */
+    Route::get('/new',[UserController::class,'Registeration']);
+
 
 });
 

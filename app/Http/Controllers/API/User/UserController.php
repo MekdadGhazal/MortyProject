@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\API\ApiTrait\FunctionTemplateTrait;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
+use App\Http\Controllers\API\Courses\CourseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\Event;
@@ -31,8 +32,15 @@ class UserController extends Controller
 //    }
 
     public function getData(){
-        return $this->successResponse(auth()->user());
+        $courses = new CourseController();
+        $list = $courses->userCourses(auth()->user()->id);
+
+        return $this->successResponse([
+                'basic' => new UserResource(auth()->user()),
+                'courses' => $list,
+            ]);
     }
+
     public function insertData(Request $request){
         return $this->insertUserData($request);
     }
@@ -54,5 +62,19 @@ class UserController extends Controller
 //        $search = UserResource::collection($search);
 //        return $this->apiResponse($search, 201, 'ok');
         return $this->searchByModel(User::class ,$request);
+    }
+
+
+    /**
+     *  New Registeration
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function Registeration()
+    {
+        try {
+            return $this->successResponse(UserResource::collection(User::where('verify' ,0)->get()));
+        }catch (\Exception $e){
+            return $this->errorResponse();
+        }
     }
 }

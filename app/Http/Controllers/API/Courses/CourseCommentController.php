@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API\Courses;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseCommentResource;
+use App\Http\Resources\UserResource;
 use App\Models\Course;
 use App\Models\CourseComment;
 use App\Models\CourseCommentReplay;
+use Couchbase\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -81,7 +83,7 @@ class CourseCommentController extends Controller
 
     /**
      *
-     *  Show all Replay using course ID
+     *  Show all Replay using Comment ID
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -90,7 +92,14 @@ class CourseCommentController extends Controller
         if(! $replies->count()){
             return $this->processResponse();
         }
-        return $replies -> replies;
+        $data = [];
+        foreach ($replies->replies as $result){
+            $data[] = [
+                'replay' => $result,
+                'user' => new UserResource(\App\Models\User::find($result->user_id))
+            ];
+        }
+        return $data;
     }
 
     /**
@@ -102,7 +111,7 @@ class CourseCommentController extends Controller
      */
     public function insertReplay(Request $request , $comment_id){
         $validator = Validator::make($request->all(), [
-            'repaly' => 'required|string',
+            'replay' => 'required|string',
         ]);
         if($validator->fails()){
             // status = 400
@@ -111,7 +120,7 @@ class CourseCommentController extends Controller
         $comment = CourseCommentReplay::create([
             'comment_id' => $comment_id,
             'user_id' => auth()->user()->id,
-            'content' => $request->repaly,
+            'content' => $request->replay,
         ]);
         $replay_count = CourseComment::where('id' , $comment_id)->get('replay');
         CourseComment::where('id' , $comment_id)->update([
