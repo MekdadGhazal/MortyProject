@@ -203,7 +203,7 @@ class AdminController extends Controller
                     'event' => $user->name ." (with id = ".$user->id.")'s role has been changed to user by: ".auth()->user()->name,
                     'user_id' => auth()->user()->id,
                 ]);
-                return $this->deleteResponse($user->name . ' returned to user again');
+                return $this->deleteResponse(new UserResource($user), $user->name . ' returned to user again');
             }
             return $this->errorValidateResponse('It is not an Admin');
         }

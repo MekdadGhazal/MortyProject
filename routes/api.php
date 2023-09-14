@@ -266,7 +266,7 @@ Route::group([
     /**
      *  9. Get Notifications about Courses
      */
-    Route::get('/course/notifications' , [CourseController::class,'notifyMe']);
+    Route::get('/notifications' , [CourseController::class,'notifyMe']);
 //        ->middleware(middleware: 'notify.check');
 
     /**
@@ -308,5 +308,10 @@ Route::group([
      *  17. search for courses [Advanced]
      */
     Route::get('/search-uc', [CourseController::class,'search']);
+
+    /**
+     *  18.Show a video from notification
+     */
+    Route::get('/video/{id}',[CourseController::class,'showVideo']);
 
 });

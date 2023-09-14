@@ -15,13 +15,15 @@ class AddVideo extends Notification
     private $description;
     private $teacher_id;
     private $course_id;
+    private $video_id;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($course_id, $title, $description, $teacher_id)
+    public function __construct($course_id, $video_id, $title, $description, $teacher_id)
     {
         $this->course_id = $course_id;
+        $this-> video_id =  $video_id;
         $this->teacher_id = $teacher_id;
         $this->title = $title;
         $this->description = $description;
@@ -57,6 +59,7 @@ class AddVideo extends Notification
     {
         return [
             'course_id' => $this->course_id,
+            'video_id' =>$this->video_id,
             'title' => $this->title,
             'description' => $this->description,
             'teacher_id' => $this->teacher_id,

@@ -69,27 +69,29 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 
 ## Start the Project
-<style>
-#start li{
-margin-bottom:20px;
-}#danger{
-font-size:12px
-}
-</style>
+
 To Start The project, you should first [Download](https://github.com/MekdadGhazal/MortyProject/) the project
 and then follow this commands:
 <ul id="start" style="list-style:decimal">
 <li>Unzip the Project.</li>
+<br/>
 <li>Save the Project in folder as <b>Online-Courses</b></li>
+<br/>
 <li>Go to folder that contain the project and Run the Command line or use the command: <b>cd Online-Courses</b></li>
+<br/>
 <li><p>copy the <code>.env.example</code> and change its name to <code>.env</code> and change the <code>DB_DATABASE=laravel</code> to <code>DB_DATABASE=api_project</code></p></li>
+<br/>
 <li><p>To Generate a Key: </p><code><b>php artisan key:generate</b></code></li>
+<br/>
 <li><p>To install important package: </p><code><b>composer install</b></code></li>
-<li><p>To migrate the Database: </p><code><b>php artisan migrate</b></code><p id="danger" style="color: red">Note that: you should have a Database with name "api-project" in your server</p></li>
+<br/>
+<li><p>To migrate the Database: </p><code><b>php artisan migrate</b></code><p id="danger" style="color: red;font-size:12px">Note that: you should have a Database with name "api-project" in your server</p></li>
+<br/>
 <li><p>To Seed your DB with initial data: (option)</p><code><b>php artisan db:seed</b></code></li>
+<br/>
 <li><p>To Run the Server:</p><code><b>php artisan serve</b></code></li>
 </ul>
 
-### To More information contact us on the following:
-#### [facebook](https://www.facebook.com/mekdad.ghazal.7/) or [twitter](https://twitter.com/mekdad_gh) or [Whatsapp](https://wa.me/qr/T7IL66VMKKRTE1)
-#### You can also follow me on : [instagram](https://www.instagram.com/itz_mekdad/)
+### To More information:
+#### [facebook](https://www.facebook.com/mekdad.ghazal.7/) or [twitter](https://twitter.com/mekdad_gh)
+#### Follow me on: [instagram](https://www.instagram.com/itz_mekdad/)

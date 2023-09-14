@@ -25,8 +25,8 @@ trait ResponseTrait
      *  1. Delete
      *  2. GET
      */
-    public function deleteResponse($data = null){
-        return $this->apiResponse($data, 200 , 'Deleted Successfully');
+    public function deleteResponse($data = null, $message = 'Deleted Successfully'){
+        return $this->apiResponse($data, 200 , $message);
     }
     public function successResponse($data){
         return $this->apiResponse($data, 200, 'OK');

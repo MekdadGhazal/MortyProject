@@ -238,7 +238,7 @@ class CourseController extends Controller
             $title = $request->title;
             $description = $request->description;
             $teacher_id = auth()->user()->id;
-            Notification::send($users, new AddVideo($course_id, $title, $description, $teacher_id));
+            Notification::send($users, new AddVideo($course_id, $video->id, $title, $description, $teacher_id));
 
             Event::create([
                 'event' => auth()->user()->name ." (with id = ". auth()->user()->id . '), has added a new video to his course : '. Course::where('id' , $course_id)->first()->title,
@@ -255,29 +255,32 @@ class CourseController extends Controller
      */
     public function notifyMe()
     {
-//        $user_id = Auth::id();
-        $user_id = 3;
-        $unread_notifications_count = User::find($user_id)
-            ->unreadnotifications
-            ->where('type', 'App\Notifications\AddVideo')
-            ->count();
+        try {
+            $user_id = Auth::id();
+            $unread_notifications_count = User::find($user_id)
+                ->unreadnotifications
+                ->where('type', 'App\Notifications\AddVideo')
+                ->count();
 
-        $unread_notifications = User::find($user_id)
-            ->unreadnotifications
-            ->where('type', 'App\Notifications\AddVideo');
+            $unread_notifications = User::find($user_id)
+                ->unreadnotifications
+                ->where('type', 'App\Notifications\AddVideo');
 
-        $readed_notifications = User::find($user_id)
-            ->notifications
-            ->where('type', 'App\Notifications\AddVideo')
-            ->whereNotNull('read_at');
+            $readed_notifications = User::find($user_id)
+                ->notifications
+                ->where('type', 'App\Notifications\AddVideo')
+                ->whereNotNull('read_at');
 
-        $data = [
-            'unread_notifications_count' => $unread_notifications_count,
-            'unread_notifications' => AddVideoNotifyResource::collection($unread_notifications),
-            'readed_notifications' => AddVideoNotifyResource::collection($readed_notifications),
-        ];
+            $data = [
+                'unread_notifications_count' => $unread_notifications_count,
+                'unread_notifications' => AddVideoNotifyResource::collection($unread_notifications),
+                'readed_notifications' => AddVideoNotifyResource::collection($readed_notifications),
+            ];
 
-        return $this->successResponse($data);
+            return $this->successResponse($data);
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
     }
 
     /**
@@ -312,7 +315,7 @@ class CourseController extends Controller
 
             return $this->successResponse($data);
         }catch (\Exception $e){
-            return $e;
+            return $this->errorResponse();
         }
     }
 
@@ -336,6 +339,61 @@ class CourseController extends Controller
         }
         //        return '<video src='. $url[0].' controls loop autoplay></video>';
     }
+
+    public function showVideo($id)
+    {
+        try {
+            if ($video = Video::find($id)) {
+                $url = 'http://127.0.0.1:8000/videos/'.$video['video'] ;
+                $userId = auth()->user()->id;
+                $courseId = $video->course_id;
+                $videoId = $id;
+
+                $notification = DB::table('notifications')->where('notifiable_id', $userId)
+                    ->where('type', 'App\Notifications\AddVideo')
+                    ->where('data->course_id', $courseId)
+                    ->where('data->video_id', $videoId)
+                    ->first();
+
+                if ($notification) {
+                    DB::table('notifications')->where('id', $notification->id)
+                        ->update([
+                            'read_at' => now(),
+                        ]);
+                }
+                return $this->successResponse($url);
+            } else {
+                return $this->errorValidateResponse("ERROR in Fetching Video");
+            }
+        } catch (\Exception $e) {
+            return $this->errorResponse();
+        }
+    }
+
+//    public function showVideo($id){
+//        try {
+//            if($video = Video::find($id)){
+//                $notifications = User::find(auth()->user()->id)
+//                    ->unreadnotifications
+//                    ->where('type', 'App\Notifications\AddVideo')
+//                    ->where('data->"course_id"', $video->course_id);
+//
+//                return $notifications;
+//
+////                Notification::where('id', $notifications->id)->update([
+////                    'read_at' => now(),
+////                ]);
+////                return $this->successResponse($url);
+//            }
+//            else{
+//                return $this->errorValidateResponse("ERROR in Fetching Video");
+//            }
+//        }catch (\Exception $e){
+//            return $this->errorResponse();
+//        }
+//    }
+
+
 
     /**
      *  Search for courses using request

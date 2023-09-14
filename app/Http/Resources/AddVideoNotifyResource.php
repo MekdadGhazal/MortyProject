@@ -17,6 +17,7 @@ class AddVideoNotifyResource extends JsonResource
     {
         return [
             'id' =>$this->id,
+            'video_id' => isset($this->data['video_id']) ? $this->data['video_id'] : '0',
             'title' => $this->data['title'],
             'description' => $this->data['description'],
             'teacher_info' =>new UserResource(User::find($this->data['teacher_id'])),
