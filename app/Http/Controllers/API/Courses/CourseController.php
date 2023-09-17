@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ApiTrait\ResponseTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AddVideoNotifyResource;
 use App\Http\Resources\CourseCommentResource;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
 use App\Models\Event;
@@ -32,18 +33,23 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::get();
-
-        $data = [];
-        foreach ($courses as $course) {
-            $teacher = User::find($course->teacher_id);
-            $data[] = [
-                'course' => $course,
-                'teacher' => new UserResource($teacher),
-            ];
+        try {
+            return $this->successResponse(CourseResource::collection(Course::get()));
+        } catch (\Exception $exception) {
+            return $this->errorResponse();
         }
-        return $this->successResponse($data);
+
+//        $courses = CourseResource::collection(Course::get());
+//        $data = [];
+//        foreach ($courses as $course) {
+//            $teacher = User::find($course->teacher_id);
+//            $data[] = [
+//                'course' => $course,
+//                'teacher' => new UserResource($teacher),
+//            ];
+//        }
     }
+
 
     /**
      *  Find course's members using id
