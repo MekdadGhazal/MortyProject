@@ -352,6 +352,49 @@ class CourseController extends Controller
     }
 
 
+    public function subscribe(Request $request)
+    {
+        try {
+            $userId = auth()->user()->id;
+            $courseId = $request->course_id;
+
+            $course = Course::find($courseId);
+
+            if (!$course) {
+                return $this->errorResponse("Course not found.");
+            }
+
+            if ($course->teacher_id != $userId) {
+                // Check if the subscription already exists
+                $existingSubscription = DB::table('user_course_pivot')
+                    ->where('user_id', $userId)
+                    ->where('course_id', $courseId)
+                    ->first();
+
+                if ($existingSubscription) {
+                    return $this->successResponse("Already subscribed to this course.");
+                }
+
+                // Create a new subscription
+                $sub = DB::table('user_course_pivot')->insert([
+                    'user_id' => $userId,
+                    'course_id' => $courseId,
+                ]);
+
+                if ($sub) {
+                    return $this->successResponse("Joined successfully.");
+                } else {
+                    return $this->errorResponse();
+                }
+            } else {
+                return $this->errorValidateResponse('You created this course.');
+            }
+        } catch (\Exception $exception) {
+            return $this->errorResponse();
+        }
+    }
+
+
     /**
      *  Videos
      */
@@ -397,28 +440,31 @@ class CourseController extends Controller
     public function showVideo($id)
     {
         try {
-            if ($video = Video::find($id)) {
-                $url = 'http://127.0.0.1:8000/videos/'.$video['video'] ;
-                $userId = auth()->user()->id;
-                $courseId = $video->course_id;
-                $videoId = $id;
+            return DB::table('notifications')->where('id' ,$id)
+                ->update(['read_at' => now(),])?$this->successResponse('READED'):$this->errorResponse();
 
-                $notification = DB::table('notifications')->where('notifiable_id', $userId)
-                    ->where('type', 'App\Notifications\AddVideo')
-                    ->where('data->course_id', $courseId)
-                    ->where('data->video_id', $videoId)
-                    ->first();
-
-                if ($notification) {
-                    DB::table('notifications')->where('id', $notification->id)
-                        ->update([
-                            'read_at' => now(),
-                        ]);
-                }
-                return $this->successResponse($url);
-            } else {
-                return $this->errorValidateResponse("ERROR in Fetching Video");
-            }
+//            if ($video = Video::find($id)) {
+//                $url = 'http://127.0.0.1:8000/videos/'.$video['video'] ;
+//                $userId = auth()->user()->id;
+//                $courseId = $video->course_id;
+//                $videoId = $id;
+//
+//                $notification = DB::table('notifications')->where('notifiable_id', $userId)
+//                    ->where('type', 'App\Notifications\AddVideo')
+//                    ->where('data->course_id', $courseId)
+//                    ->where('data->video_id', $videoId)
+//                    ->first();
+//
+//                if ($notification) {
+//                    DB::table('notifications')->where('id', $notification->id)
+//                        ->update([
+//                            'read_at' => now(),
+//                        ]);
+//                }
+//                return $this->successResponse($url);
+//            } else {
+//                return $this->errorValidateResponse("ERROR in Fetching Video");
+//            }
         } catch (\Exception $e) {
             return $this->errorResponse();
         }

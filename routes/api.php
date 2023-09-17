@@ -316,4 +316,9 @@ Route::group([
      */
     Route::get('/video/{id}',[CourseController::class,'showVideo']);
 
+    /**
+     *  19.JOIN TO COURSE
+     */
+    Route::post('/subscribe',[CourseController::class,'subscribe']);
+
 });
