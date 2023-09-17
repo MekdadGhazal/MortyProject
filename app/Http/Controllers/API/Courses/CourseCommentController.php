@@ -67,11 +67,19 @@ class CourseCommentController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id){
-        if($comment = CourseComment::find($id)){
-            $comment->delete();
-            return $this->deleteResponse();
+        try{
+            if($comment = CourseComment::find($id)){
+                $userId = $comment->user_id;
+                if(auth()->user()->id != $userId){
+                    return $this->errorResponse();
+                }
+                $comment->delete();
+                return $this->deleteResponse();
+            }
+            return $this->errorResponse();
+        }catch (\Exception $exception) {
+            return $this->errorResponse();
         }
-        return $this->errorResponse();
     }
 
 

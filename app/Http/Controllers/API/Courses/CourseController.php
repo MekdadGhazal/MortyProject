@@ -92,6 +92,7 @@ class CourseController extends Controller
      * @return mixed
      */
     public function userCourses($id){
+
         if($user = User::find($id)){
             if($user->courses->count()){
                 return User::find($id)->courses;
@@ -148,44 +149,75 @@ class CourseController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function edit(Request $request){
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|between:2,100',
-            'level'=>'required|between:0,100',
-            'hours'=>'required|string',
-            'teacher_id'=>'required',
-            'price'=>'required',
-            'photo' => 'required|mimes:jpg,png'
-        ]);
-        if($validator->fails()){
-            // status = 400
-            return $this->errorValidateResponse($validator->errors());
-        }
-        $exists = Course::where('title', $request->title)->where('level', $request->level)->get('id');
-        if(!$exists->count()){
-            $path = $this->upload($request , 'photo', 'image' , null);
-            $course = Course::find($request->course_id)->Update(array_merge(
-                $validator->validated(),
-                [
-                    'image' => $path,
-                    'description' =>$request->description,
-                ]
-            ));
-            return $this->apiResponse(Course::find($request->course_id),201,'Updated successfully');
-        }else{
-            if($exists[0]->id == $request->course_id){
-                $path = $this->upload($request , 'photo', 'image' , null);
-                $course = Course::find($request->course_id)->Update(array_merge(
+        try{
+            if(auth()->user()->id == Course::find($request->course_id)->teacher_id) {
+                $validator = Validator::make($request->all(), [
+                    'title' => 'required|string|between:2,100',
+                    'level'=>'required|between:0,100',
+                    'hours'=>'required|string',
+                    'price'=>'required',
+                    'photo' => 'required|mimes:jpg,png'
+                ]);
+                if($validator->fails()){
+                    return $this->errorValidateResponse($validator->errors());
+                }
+//                Storage::delete(Course::find($request->course_id)->image);
+                $path = $this->upload($request , 'photo', 'image' , 'image-course-'.$request->course_id);
+                $course = Course::find($request->course_id)->update(array_merge(
                     $validator->validated(),
                     [
+//                        'teacher_id' => auth()->user()->id,
                         'image' => $path,
                         'description' =>$request->description,
                     ]
                 ));
-                return $this->apiResponse($course,201,'Updated successfully');
+                return $this->apiResponse(Course::find($request->course_id),201,'Updated successfully');
+            }else{
+                return $this->errorValidateResponse('You Can not edit the following Course.');
             }
-            return $this->errorValidateResponse('There is a course with the same Title and level');
+        }catch (\Exception $exception){
+            return $this->errorResponse();
         }
+//        $validator = Validator::make($request->all(), [
+//            'title' => 'required|string|between:2,100',
+//            'level'=>'required|between:0,100',
+//            'hours'=>'required|string',
+////            'teacher_id'=>'required',
+//            'price'=>'required',
+//            'photo' => 'required|mimes:jpg,png'
+//        ]);
+//
+//        if($validator->fails()){
+//            // status = 400
+//            return $this->errorValidateResponse($validator->errors());
+//        }
+//        $exists = Course::where('title', $request->title)->where('level', $request->level)->get('id');
+//        if(!$exists->count()){
+//            $path = $this->upload($request , 'photo', 'image' , null);
+//            $course = Course::find($request->course_id)->Update(array_merge(
+//                $validator->validated(),
+//                [
+//                    'teacher_id' => auth()->user()->id,
+//                    'image' => $path,
+//                    'description' =>$request->description,
+//                ]
+//            ));
+//            return $this->apiResponse(Course::find($request->course_id),201,'Updated successfully');
+//        }else{
+//            if($exists[0]->id == $request->course_id){
+//                $path = $this->upload($request , 'photo', 'image' , null);
+//                $course = Course::find($request->course_id)->Update(array_merge(
+//                    $validator->validated(),
+//                    [
+//                        'teacher_id' => auth()->user()->id,
+//                        'image' => $path,
+//                        'description' =>$request->description,
+//                    ]
+//                ));
+//                return $this->apiResponse($course,201,'Updated successfully');
+//            }
+//            return $this->errorValidateResponse('There is a course with the same Title and level');
+//        }
     }
 
 
@@ -323,21 +355,43 @@ class CourseController extends Controller
     /**
      *  Videos
      */
-    public function showVideos($id){
-        if(!Video::where('course_id' , $id)->get('video')->count()){
-            $videos = Video::where('course_id' , $id)->get('video');
-            $i = 0 ;
-            $url = [];
-            foreach ($videos as $video){
-                $url [$i] = 'http://127.0.0.1:8000/videos/'.$video['video'] ;
-                $i++ ;
+    public function showVideos($id)
+    {
+        try {
+            if (Course::find($id)) {
+                $videos = Video::where('course_id', $id)->get('video');
+                if ($videos->count() != 0) {
+                    $i = 0;
+                    $url = [];
+                    foreach ($videos as $video) {
+                        $url [$i] = 'http://127.0.0.1:8000/videos/' . $video['video'];
+//                        $url [$i] = asset($video['video']) ;
+                        $i++;
+                    }
+                    return $this->successResponse($url);
+                }
+                return $this->errorValidateResponse("the course has not any video yet");
             }
-            return $this->successResponse($url);
+            return $this->errorResponse();
+
+        } catch (\Exception $exception) {
+            return $this->errorResponse();
         }
-        else{
-            return $this->errorValidateResponse("the course has not any video yet");
-        }
-        //        return '<video src='. $url[0].' controls loop autoplay></video>';
+
+//        if(!Video::where('course_id' , $id)->get('video')->count()){
+//            $videos = Video::where('course_id' , $id)->get('video');
+//            $i = 0 ;
+//            $url = [];
+//            foreach ($videos as $video){
+//                $url [$i] = 'http://127.0.0.1:8000/videos/'.$video['video'] ;
+//                $i++ ;
+//            }
+//            return $this->successResponse($url);
+//        }
+//        else{
+//            return $this->errorValidateResponse("the course has not any video yet");
+//        }
+//        //        return '<video src='. $url[0].' controls loop autoplay></video>';
     }
 
     public function showVideo($id)

@@ -17,7 +17,7 @@ class NotificationsMiddle
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->user()->id != $_GET['id']){
+        if(! auth()->user()){
             return $this -> unAuthorizedResponse();
         }
         return $next($request);

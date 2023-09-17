@@ -64,7 +64,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::group([
-//    'middleware' => ['auth:api', 'admin.check'],
+    'middleware' => ['auth:api', 'admin.check'],
     'prefix' => 'admin',
 ] ,function (){
     /**
@@ -201,7 +201,7 @@ Route::group([
  *  6. register
  *  7. knowing the Course that joined //need to remove id and edition
  *  8. Get Information about course
- *  9. Get Notifications about Courses // Not work
+ *  9. Get Notifications about Courses
  *  10. Add a Comment on Course
  *  11. Delete a Comment
  *  12. Show all Comments
@@ -209,6 +209,9 @@ Route::group([
  *  14.Show all replies for comment
  *  15.See all video of course
  *  16.Get all Courses
+ *  17. search for courses [Advanced]
+ *  18.Show a video from notification
+ *
  *
  *  note that ::
  *  each route should start with [api/user]
@@ -235,8 +238,8 @@ Route::group([
      *      3.1 Get User information - using Get method
      *      3.2 Edit the New information - using Post method
      */
-    Route::get('/edit',[UserController::class,'getData'])->middleware('verify.check');
-    Route::post('/insert',[UserController::class,'insertData'])->middleware('verify.check');
+    Route::get('/edit',[UserController::class,'getData'])->middleware(['verify.check', 'auth:api']);
+    Route::post('/insert',[UserController::class,'insertData'])->middleware('verify.check', 'auth:api');
 
     /**
      *  4. Delete Account
@@ -256,7 +259,7 @@ Route::group([
     /**
      *  7. knowing the Course that joined
      */
-    Route::get('/course/{id}', [CourseController::class,'userCourses']);
+    Route::get('/course/{id}', [CourseController::class,'userCourses'])->middleware( 'auth:api');
 
     /**
      *  8. Get Information about course
@@ -266,8 +269,7 @@ Route::group([
     /**
      *  9. Get Notifications about Courses
      */
-    Route::get('/notifications' , [CourseController::class,'notifyMe']);
-//        ->middleware(middleware: 'notify.check');
+    Route::get('/notifications' , [CourseController::class,'notifyMe'])->middleware(['notify.check', 'auth:api']);
 
     /**
      *  10. Comment on Course
@@ -277,7 +279,7 @@ Route::group([
     /**
      *  11. Delete a Comment
      */
-    Route::delete('/course/{id}/destroy-comment' , [CourseCommentController::class ,'destroy']);
+    Route::delete('/course/{id}/destroy-comment' , [CourseCommentController::class ,'destroy'])->middleware('auth:api');
 
     /**
      *  12. Show all Comments

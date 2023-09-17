@@ -145,25 +145,38 @@ trait FunctionTemplateTrait
      */
     public function insertUserData($request): \Illuminate\Http\JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
-            'password' => 'required|string|min:6',
-        ]);
-        if ($validator->fails()) {
-            return $this->notValidResponse($validator->errors());
-        }
-        if(auth()->user()){
-            $user = User::find(auth()->user()->id);
-            $user->update(array_merge(
-                $validator->validated(),
-                ['password' => bcrypt($request->password)]
-            ));
-            Event::create([
-                'event' => 'The User with id:' .  auth()->user()->id . ', has changed his Profile Information',
+        try{
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|between:2,100',
+                'password' => 'required|string|min:6',
             ]);
-            return $this->successResponse($user); //201
+            if ($validator->fails()) {
+                return $this->notValidResponse($validator->errors());
+            }
+            if (auth()->user()) {
+                $user = User::find(auth()->user()->id);
+                if ($request->email != $user->email) {
+                    $emailValidator = Validator::make($request->all(), [
+                        'email' => 'required|string|email|max:100|unique:users',
+                    ]);
+                    if ($emailValidator->fails()) {
+                        return $this->notValidResponse($emailValidator->errors());
+                    }
+                    $user->email = $request->email;
+                }
+                $user->name = $request->name;
+                $user->password = bcrypt($request->password);
+                $user->save();
+                Event::create([
+                    'event' => 'The User with id:' . auth()->user()->id . ', has changed his Profile Information',
+                    'user_id' => auth()->user()->id,
+                ]);
+                return $this->successResponse($user);
+            }
+            return $this->errorValidateResponse('Connection Error.');
+        }catch(\Exception $e){
+            return $this->errorResponse();
         }
-        return $this->errorResponse();
     }
 
 
