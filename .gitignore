@@ -1,5 +1,7 @@
 /.phpunit.cache
 /node_modules
+/public/morty.jpg
+/public/myImage.png
 /public/build
 /public/hot
 /public/storage
