@@ -81,6 +81,19 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(CourseCommentReplay::class);
     }
 
+    /*
+     * POST MODEL
+     */
+    public function posts(){
+        return $this->hasMany(Post::class);
+    }
+
+    /**
+     *  PostComment
+     */
+    public function comments(){
+        return $this->hasMany(PostComment::class);
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

@@ -185,6 +185,22 @@ Route::group([
      */
     Route::get('/new',[UserController::class,'Registeration']);
 
+    /**
+     *  21. Add a new Post
+     */
+    Route::post('/post',[\App\Http\Controllers\PostController::class,'insert']);
+
+    /**
+     * 22. Edit the Post
+     */
+    Route::post('/edit-post',[\App\Http\Controllers\PostController::class,'editPost']);
+
+
+    /**
+     *  23. Delete the post
+     */
+    Route::delete('/post',[\App\Http\Controllers\PostController::class,'deletePost']);
+
 
 });
 
@@ -321,4 +337,31 @@ Route::group([
      */
     Route::post('/subscribe',[CourseController::class,'subscribe']);
 
+    /**
+     *  20. Get all Posts
+     */
+    Route::get('/posts',[\App\Http\Controllers\PostController::class,'index']);
+
+    /**
+     *  21. Show Post
+     */
+    Route::get('/post/{id}',[\App\Http\Controllers\PostController::class,'getPost']);
+
+    /**
+     *  22. Show all Comments on Post
+     */
+    Route::get('/comments',[\App\Http\Controllers\PostCommentController::class,'index']);
+
+    /**
+     *   23. Add a comment
+     */
+    Route::post('/add-comment',[\App\Http\Controllers\PostCommentController::class,'insert'])->middleware(['verify.check', 'auth:api']);
+
+    /**
+     *  24. Delete a comment
+     */
+    Route::post('/delete-comment',[\App\Http\Controllers\PostCommentController::class,'destroy'])->middleware(['verify.check', 'auth:api']);
+
+
 });
+

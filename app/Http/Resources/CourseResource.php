@@ -23,7 +23,7 @@ class CourseResource extends JsonResource
             'level' => $this->level,
             'price' => $this->price,
             'hours' => $this->hours,
-            'image' => $this->image,
+            'image' => 'http://127.0.0.1:8000/images/'.$this->image,
             'create_at' => $this->create_at,
         ];
     }

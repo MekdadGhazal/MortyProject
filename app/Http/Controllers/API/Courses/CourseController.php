@@ -407,17 +407,19 @@ class CourseController extends Controller
     public function showVideos($id)
     {
         try {
-            if (Course::find($id)) {
-                $videos = Video::where('course_id', $id)->get('video');
+            $course = Course::find($id);
+            if ($course) {
+                $videos = Video::where('course_id', $id)->get();
                 if ($videos->count() != 0) {
-                    $i = 0;
-                    $url = [];
+                    $data = [];
                     foreach ($videos as $video) {
-                        $url [$i] = 'http://127.0.0.1:8000/videos/' . $video['video'];
-//                        $url [$i] = asset($video['video']) ;
-                        $i++;
+                        $data[] = [
+                            'title' => $video->title,
+                            'description' => $video->description,
+                            'url' => 'http://127.0.0.1:8000/videos/' . $video->video
+                        ];
                     }
-                    return $this->successResponse($url);
+                    return $this->successResponse($data);
                 }
                 return $this->errorValidateResponse("the course has not any video yet");
             }
