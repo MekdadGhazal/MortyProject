@@ -362,6 +362,5 @@ Route::group([
      */
     Route::post('/delete-comment',[\App\Http\Controllers\PostCommentController::class,'destroy'])->middleware(['verify.check', 'auth:api']);
 
-
 });
 
