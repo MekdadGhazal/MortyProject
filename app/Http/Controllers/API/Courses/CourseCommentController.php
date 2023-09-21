@@ -119,25 +119,39 @@ class CourseCommentController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function insertReplay(Request $request , $comment_id){
-        $validator = Validator::make($request->all(), [
-            'replay' => 'required|string',
-        ]);
-        if($validator->fails()){
-            // status = 400
-            return $this->errorValidateResponse($validator->errors());
-        }
+        try {
+            $validator = Validator::make($request->all(), [
+                'replay' => 'required|string',
+            ]);
+            if($validator->fails()){
+                // status = 400
+                return $this->errorValidateResponse($validator->errors());
+            }
 
-        $replay_count = CourseComment::where('id' , $comment_id)->get('replay');
-        CourseComment::where('id' , $comment_id)->update([
-            'replay' =>  $replay_count[0]->replay + 1,
+            $replay_count = CourseComment::where('id' , $comment_id)->get('replay');
+            CourseComment::where('id' , $comment_id)->update([
+                'replay' =>  $replay_count[0]->replay + 1,
             ]);
 
-        $comment = CourseCommentReplay::create([
-            'comment_id' => $comment_id,
-            'user_id' => auth()->user()->id,
-            'content' => $request->replay,
-        ]);
-//        return $this->apiResponse($comment,201,'Replay successfully');
-        return $this->successResponse(new CourseCommentResource(CourseComment::find($comment_id)));
+            $comment = CourseCommentReplay::create([
+                'comment_id' => $comment_id,
+                'user_id' => auth()->user()->id,
+                'content' => $request->replay,
+            ]);
+
+            $data = [
+                'comment_id' => $comment_id,
+                'content' => $request->replay,
+                'replay' => 0,
+                'repairs' =>[],
+                'id' => $comment->id,
+                'created_at' =>$comment ->created_at->diffForHumans(),
+                'user' => new UserResource(auth()->user()),
+            ];
+            return $this->createResponse($data);
+        }catch (\Exception $exception){
+            return  $this->errorResponse();
+        }
+//        return $this->successResponse(new CourseCommentResource(CourseComment::find($comment_id)));
     }
 }
