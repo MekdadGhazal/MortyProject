@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ApiTrait\ResponseTrait;
 use App\Http\Controllers\API\Courses\CourseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\Course;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,10 +36,16 @@ class UserController extends Controller
         $courses = new CourseController();
         $list = $courses->userCourses(auth()->user()->id);
 
-        return $this->successResponse([
-                'basic' => new UserResource(auth()->user()),
-                'courses' => $list,
-            ]);
+        $data = [
+            'user' => new UserResource(auth()->user()),
+            'joinedCourses' => $list,
+            ];
+
+        if (auth()->user()->admin) {
+            $create = Course::where('teacher_id', auth()->user()->id)->count() ? Course::where('teacher_id', auth()->user()->id)->get() : 'No Created course yet.';
+            $data['createdCourses'] = $create;
+        }
+        return $this->successResponse($data);
     }
 
     public function insertData(Request $request){

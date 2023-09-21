@@ -46,7 +46,7 @@ trait FunctionTemplateTrait
             ->get();
 
         if ($model == 'App\\Models\\User') {
-            $search = UserResource::collection($search);
+            $search = UserResource::collection($search->where('verify', '==' , 1));
         } else {
             $admins = Admin::pluck('user_id')->toArray();
             $search = $search->filter(

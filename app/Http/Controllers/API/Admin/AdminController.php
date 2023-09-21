@@ -32,13 +32,15 @@ class AdminController extends Controller
     public function getUser($id)
     {
         try {
-            $user = User::find($id);
+            $tempId = $id;
+
+            $user = User::find($tempId);
             if (!$user) {
                 return $this->errorResponse();
             }
 
             $courses = new CourseController();
-            $lists = $courses->userCourses($id);
+            $lists = $courses->userCourses($tempId);
 
             $data = [
                 'user' => new UserResource($user),
@@ -46,16 +48,16 @@ class AdminController extends Controller
             ];
 
             if ($user->admin) {
-                $create = Course::where('teacher_id', $id)->count() ? Course::where('teacher_id', $id)->get() : 'No Created course yet.';
+                $create = Course::where('teacher_id', $tempId)->count() ? Course::where('teacher_id', $tempId)->get() : 'No Created course yet.';
                 $data['createdCourses'] = $create;
             }
 
             return $this->successResponse($data);
         } catch (\Exception $e) {
-            return $this->errorResponse();
+            return $e->getMessage();
         }
     }
-
+//
     public function verifyUser($id){
         if (User::find($id)){
             if(User::find($id)->verify != 1){
@@ -159,10 +161,8 @@ class AdminController extends Controller
     public function showAdmin(){
         if($users = Admin::get()) {
             $mat = [];
-            $i = 0;
-            foreach ($users as $user) {
-                $mat[$i] = new UserResource($user->user);
-                $i++;
+            foreach ($users as $user){
+                $mat[] = new UserResource($user->user);
             }
             return $this->successResponse($mat);
         }

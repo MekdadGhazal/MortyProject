@@ -71,7 +71,7 @@ class CourseController extends Controller
             $course = Course::find($id);
             $course_ = Course::find($id);
             $mat = [
-                'course_info' => $course_ ,
+                'course_info' => new CourseResource($course_) ,
                 'created_by' => new UserResource($course->teacher),
                 'course_members' => UserResource::collection($course->users),
             ];
@@ -87,7 +87,7 @@ class CourseController extends Controller
      */
     public function courses($id){
         if(User::find($id)){
-            return User::find($id)->tracherCoursesName->count()? $this->successResponse(User::find($id)->tracherCoursesName) : $this->errorResponse();
+            return User::find($id)->tracherCoursesName->count()? $this->successResponse(CourseResource::collection(User::find($id)->tracherCoursesName)) : $this->errorResponse();
         }
         return $this->errorResponse();
     }
@@ -98,10 +98,16 @@ class CourseController extends Controller
      * @return mixed
      */
     public function userCourses($id){
+        $tempId = 0;
+        if(auth()->user()->admin){
+            $tempId = $id;
+        }else {
+            $tempId = auth()->user()->id;
+        }
 
-        if($user = User::find($id)){
+        if($user = User::find($tempId)){
             if($user->courses->count()){
-                return User::find($id)->courses;
+                return CourseResource::collection(User::find($tempId)->courses);
 //                return $this->successResponse(User::find($id)->courses);
             }
             return 'Not joined to any course yet.';
@@ -345,7 +351,7 @@ class CourseController extends Controller
 //            $videos = $this->showVideos($id);
 
             $data = [
-                'course' => $course,
+                'course' => new CourseResource($course),
                 'teacher' => $teacher,
                 'comments'  => $comments[1]['data'],
                 'video' => $videos[1]['data']
@@ -523,8 +529,8 @@ class CourseController extends Controller
                 ->get();
 
             $result = [
-                'result' => $search,
-                'suggestion' => $suggestion
+                'result' => CourseResource::collection($search),
+                'suggestion' => CourseResource::collection($suggestion)
             ];
 
             return $this->successResponse($result);

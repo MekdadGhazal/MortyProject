@@ -353,14 +353,16 @@ Route::group([
     Route::get('/comments',[\App\Http\Controllers\PostCommentController::class,'index']);
 
     /**
-     *   23. Add a comment
+     *   23. Add a comment to Post
      */
     Route::post('/add-comment',[\App\Http\Controllers\PostCommentController::class,'insert'])->middleware(['verify.check', 'auth:api']);
 
     /**
-     *  24. Delete a comment
+     *  24. Delete a comment on Post
      */
     Route::post('/delete-comment',[\App\Http\Controllers\PostCommentController::class,'destroy'])->middleware(['verify.check', 'auth:api']);
+
+
 
 });
 
