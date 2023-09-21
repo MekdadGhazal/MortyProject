@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('replay_posts', function (Blueprint $table) {
             $table->id();
-            $table->text('body');
+            $table->text('content');
             $table->foreignId('comment_id')->references('id')->on('post_comments');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();

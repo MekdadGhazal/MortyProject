@@ -22,4 +22,9 @@ class PostComment extends Model
     public function post(){
         return $this->belongsTo(Post::class , 'post_id');
     }
+
+
+    public function replies(){
+        return $this->hasMany(ReplayPost::class,'comment_id');
+    }
 }

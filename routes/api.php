@@ -363,6 +363,10 @@ Route::group([
     Route::post('/delete-comment',[\App\Http\Controllers\PostCommentController::class,'destroy'])->middleware(['verify.check', 'auth:api']);
 
 
+    /*
+     *
+     */
+    Route::post('/add-replay/{id}',[\App\Http\Controllers\ReplayPostController::class,'insert'])->middleware(['verify.check', 'auth:api']);
 
 });
 

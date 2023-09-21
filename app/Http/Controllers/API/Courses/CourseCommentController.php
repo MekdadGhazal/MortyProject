@@ -58,7 +58,8 @@ class CourseCommentController extends Controller
             'user_id' => auth()->user()->id,
             'content' => $request->comment,
         ]);
-        return $this->apiResponse($comment,201,'added successfully');
+//        return $this->apiResponse($comment,201,'added successfully');
+        return $this->createResponse(new CourseCommentResource($comment));
     }
 
     /**
@@ -101,7 +102,7 @@ class CourseCommentController extends Controller
             return $this->processResponse();
         }
         $data = [];
-        foreach ($replies->replies as $result){
+        foreach ($replies->replies->sortByDesc('created_at') as $result){
             $data[] = [
                 'replay' => $result,
                 'user' => new UserResource(\App\Models\User::find($result->user_id))
@@ -125,15 +126,18 @@ class CourseCommentController extends Controller
             // status = 400
             return $this->errorValidateResponse($validator->errors());
         }
+
+        $replay_count = CourseComment::where('id' , $comment_id)->get('replay');
+        CourseComment::where('id' , $comment_id)->update([
+            'replay' =>  $replay_count[0]->replay + 1,
+            ]);
+
         $comment = CourseCommentReplay::create([
             'comment_id' => $comment_id,
             'user_id' => auth()->user()->id,
             'content' => $request->replay,
         ]);
-        $replay_count = CourseComment::where('id' , $comment_id)->get('replay');
-        CourseComment::where('id' , $comment_id)->update([
-            'replay' =>  $replay_count[0]->replay + 1,
-            ]);
-        return $this->apiResponse($comment,201,'Replay successfully');
+//        return $this->apiResponse($comment,201,'Replay successfully');
+        return $this->successResponse(new CourseCommentResource(CourseComment::find($comment_id)));
     }
 }
