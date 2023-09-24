@@ -18,7 +18,7 @@ class PostResource extends JsonResource
         return [
             'title' => $this->title,
             'body' => $this->body,
-            'user' =>User::find($this->user_id)->name,
+            'user' =>isset(User::find($this->user_id)->name)?User::find($this->user_id)->name:0,
             'created_at' => isset($this->created_at)? $this->created_at->diffForHumans() : 0,
         ];
     }

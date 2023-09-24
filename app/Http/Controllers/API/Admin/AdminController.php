@@ -159,14 +159,19 @@ class AdminController extends Controller
     }
 
     public function showAdmin(){
-        if($users = Admin::get()) {
-            $mat = [];
-            foreach ($users as $user){
-                $mat[] = new UserResource($user->user);
+        try {
+            $users = Admin::get();
+            if(! $users->isEmpty()) {
+                $mat = [];
+                foreach ($users as $user){
+                    $mat[] = new UserResource($user->user);
+                }
+                return $this->successResponse($mat);
             }
-            return $this->successResponse($mat);
+            return $this->errorResponse();
+        }catch (\Exception $exception){
+            return $exception->getMessage();
         }
-        return $this->errorResponse();
     }
 
     public function search(Request $request){

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('replay_posts', function (Blueprint $table) {
             $table->id();
             $table->text('content');
-            $table->foreignId('comment_id')->references('id')->on('post_comments');
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('comment_id')->references('id')->on('post_comments')->cascadeOnDelete();
+            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

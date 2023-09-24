@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('post_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('post_id')->references('id')->on('posts');
-            $table->text('body');
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('post_id')->references('id')->on('posts')->cascadeOnDelete();
+            $table->text('content');
+            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->integer('replay')->default(0);
             $table->timestamps();
         });

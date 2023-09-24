@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Controllers\ReplayPostController;
+use App\Http\Controllers\API\Post\ReplayPostController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,7 +23,7 @@ class PostReplayResource extends JsonResource
             'comment_id' =>$this->id,
             'content' => $this->content,
             'created_at' => isset($this->created_at)?$this->created_at->diffForHumans():0,
-            'replay' => $this ->replay,
+            'replay' => isset($this ->replay)?$this ->replay:0,
             'replies' =>$commentsController->replies($this->id),
         ];
     }

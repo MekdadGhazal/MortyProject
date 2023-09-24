@@ -19,7 +19,7 @@ class PostCommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'body' => fake()->text(),
+            'content' => fake()->text(),
             'user_id' => random_int(1,User::get()->count()),
             'post_id' => random_int(1,Post::get()->count())
         ];

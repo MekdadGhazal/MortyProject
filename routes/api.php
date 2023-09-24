@@ -2,13 +2,13 @@
 
 use App\Http\Controllers\API\Admin\AdminController;
 use App\Http\Controllers\API\Courses\CourseCommentController;
-//use App\Http\Controllers\API\Courses\CourseController;
 use App\Http\Controllers\API\Courses\CourseController;
 use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\User\UserController;
-//use App\Http\Controllers\Controller\AuthController;
-
 use Illuminate\Support\Facades\Route;
+
+//use App\Http\Controllers\API\Courses\CourseController;
+//use App\Http\Controllers\Controller\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,18 +188,18 @@ Route::group([
     /**
      *  21. Add a new Post
      */
-    Route::post('/post',[\App\Http\Controllers\PostController::class,'insert']);
+    Route::post('/post',[\App\Http\Controllers\API\Post\PostController::class,'insert']);
 
     /**
      * 22. Edit the Post
      */
-    Route::post('/edit-post',[\App\Http\Controllers\PostController::class,'editPost']);
+    Route::post('/edit-post',[\App\Http\Controllers\API\Post\PostController::class,'editPost']);
 
 
     /**
      *  23. Delete the post
      */
-    Route::delete('/post',[\App\Http\Controllers\PostController::class,'deletePost']);
+    Route::delete('/post',[\App\Http\Controllers\API\Post\PostController::class,'deletePost']);
 
 
 });
@@ -313,6 +313,11 @@ Route::group([
     Route::get('/course/replay-comment/{id}' , [CourseCommentController::class ,'replies']);
 
     /**
+     *  Destroy Replay on Course
+     */
+    Route::post('/course/delete-replay/{id}', [CourseCommentController::class, 'destroyReplay']);
+
+    /**
      *  15.See all video of course
      */
     Route::get('/course/{id}/videos',[CourseController::class,'showVideos']);
@@ -340,33 +345,38 @@ Route::group([
     /**
      *  20. Get all Posts
      */
-    Route::get('/posts',[\App\Http\Controllers\PostController::class,'index']);
+    Route::get('/posts',[\App\Http\Controllers\API\Post\PostController::class,'index']);
 
     /**
      *  21. Show Post
      */
-    Route::get('/post/{id}',[\App\Http\Controllers\PostController::class,'getPost']);
+    Route::get('/post/{id}',[\App\Http\Controllers\API\Post\PostController::class,'getPost']);
 
     /**
      *  22. Show all Comments on Post
      */
-    Route::get('/comments',[\App\Http\Controllers\PostCommentController::class,'index']);
+    Route::get('/comments',[\App\Http\Controllers\API\Post\PostCommentController::class,'index']);
 
     /**
      *   23. Add a comment to Post
      */
-    Route::post('/add-comment',[\App\Http\Controllers\PostCommentController::class,'insert'])->middleware(['verify.check', 'auth:api']);
+    Route::post('/add-comment',[\App\Http\Controllers\API\Post\PostCommentController::class,'insert'])->middleware(['verify.check', 'auth:api']);
 
     /**
      *  24. Delete a comment on Post
      */
-    Route::post('/delete-comment',[\App\Http\Controllers\PostCommentController::class,'destroy'])->middleware(['verify.check', 'auth:api']);
+    Route::post('/delete-comment',[\App\Http\Controllers\API\Post\PostCommentController::class,'destroy'])->middleware(['verify.check', 'auth:api']);
 
 
     /*
-     *
+     *  25.add Replay on Post
      */
-    Route::post('/add-replay/{id}',[\App\Http\Controllers\ReplayPostController::class,'insert'])->middleware(['verify.check', 'auth:api']);
+    Route::post('/add-replay/{id}',[\App\Http\Controllers\API\Post\ReplayPostController::class,'insert'])->middleware(['verify.check', 'auth:api']);
+
+    /**
+     *  Destroy Replay on Post
+     */
+    Route::post('/delete/{id}',[\App\Http\Controllers\API\Post\ReplayPostController::class,'destroy'])->middleware(['verify.check', 'auth:api']);
 
 });
 

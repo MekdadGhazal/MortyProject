@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\Post;
 
 use App\Http\Controllers\API\ApiTrait\FunctionTemplateTrait;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -22,7 +23,8 @@ class PostController extends Controller
             }
             return $this->errorResponse();
         }catch (\Exception $exception){
-            return $this->errorResponse();
+//            return $this->errorResponse();
+            return  $exception->getMessage();
         }
     }
 

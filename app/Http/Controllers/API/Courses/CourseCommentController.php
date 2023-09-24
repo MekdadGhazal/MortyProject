@@ -154,4 +154,21 @@ class CourseCommentController extends Controller
         }
 //        return $this->successResponse(new CourseCommentResource(CourseComment::find($comment_id)));
     }
+
+
+    public function destroyReplay($id){
+        try{
+            if($replay = CourseCommentReplay::find($id)){
+                $userId = $replay->user_id;
+                if(auth()->user()->id != $userId){
+                    return $this->errorResponse();
+                }
+                $replay->delete();
+                return $this->deleteResponse();
+            }
+            return $this->errorResponse();
+        }catch (\Exception $exception) {
+            return $this->errorResponse();
+        }
+    }
 }

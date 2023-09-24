@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->integer('level');
             $table->string('hours');
-            $table->foreignId('teacher_id')->references('id')->on('users');
+            $table->foreignId('teacher_id')->references('id')->on('users')->cascadeOnDelete();
             $table->string('image')->nullable();
             $table->float('price');
             $table->timestamps();
