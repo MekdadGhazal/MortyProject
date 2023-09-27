@@ -374,7 +374,7 @@ Route::group([
     Route::post('/add-replay/{id}',[\App\Http\Controllers\API\Post\ReplayPostController::class,'insert'])->middleware(['verify.check', 'auth:api']);
 
     /**
-     *  Destroy Replay on Post
+     *  26. Destroy Replay on Post
      */
     Route::post('/delete/{id}',[\App\Http\Controllers\API\Post\ReplayPostController::class,'destroy'])->middleware(['verify.check', 'auth:api']);
 

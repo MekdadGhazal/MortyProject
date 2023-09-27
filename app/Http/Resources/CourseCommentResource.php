@@ -22,7 +22,7 @@ class CourseCommentResource extends JsonResource
             'user' => $user,
             'comment_id' =>$this->id,
             'content' => $this->content,
-            'created_at' => $this->created_at->diffForHumans(),
+            'created_at' => isset($this->created_at)?$this->created_at->diffForHumans():0,
             'replay' => isset($this ->replay)? $this ->replay: 0,
             'replies' =>$commentsController->replies($this->id),
         ];

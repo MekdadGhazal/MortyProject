@@ -36,7 +36,7 @@ class CourseController extends Controller
         try {
             return $this->successResponse(CourseResource::collection(Course::get()));
         } catch (\Exception $exception) {
-            return $this->errorResponse();
+            return $exception->getMessage();
         }
 
 //        $courses = CourseResource::collection(Course::get());
@@ -370,7 +370,7 @@ class CourseController extends Controller
 
             return $this->successResponse($data);
         }catch (\Exception $e){
-            return $this->errorResponse();
+            return $e;
         }
     }
 

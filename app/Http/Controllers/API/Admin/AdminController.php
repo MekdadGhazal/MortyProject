@@ -21,10 +21,16 @@ class AdminController extends Controller
     use ResponseTrait;
     use FunctionTemplateTrait;
 
-    public function index(){
-        try{
-            return $this->successResponse(UserResource::collection(User::where('verify','!=',0)->get()));
-        }catch (\Exception $e){
+    public function index()
+    {
+        try {
+            // Retrieve a collection of users where the 'verify' column is not equal to 0
+            $users = User::where('verify', '!=', 0)->get();
+
+            // Return a success response with the user collection
+            return $this->successResponse(UserResource::collection($users));
+        } catch (\Exception $e) {
+            // Return an error response if an exception is caught
             return $this->errorResponse();
         }
     }
