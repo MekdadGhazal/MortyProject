@@ -86,4 +86,4 @@ To start the project, please follow these steps:
 </ul>
 
 #### Please note that for more detailed information or if you have any specific questions, you can reach out to me on:
-#### [facebook](https://www.facebook.com/mekdad.ghazal.7/) or [linkedIn](www.linkedin.com/in/mekdad-ghazal-it)
+#### [facebook](https://www.facebook.com/mekdad.ghazal.7/) or [linkedIn](https://www.linkedin.com/in/mekdad-ghazal-it/)
