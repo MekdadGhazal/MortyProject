@@ -70,28 +70,20 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Start the Project
 
-To Start The project, you should first [Download](https://github.com/MekdadGhazal/MortyProject/) the project
-and then follow this commands:
+To start the project, please follow these steps:
 <ul id="start" style="list-style:decimal">
-<li>Unzip the Project.</li>
+<li>Download the project and unzip it.</li>
 <br/>
-<li>Save the Project in folder as <b>Online-Courses</b></li>
-<br/>
-<li>Go to folder that contain the project and Run the Command line or use the command: <b>cd Online-Courses</b></li>
-<br/>
-<li><p>copy the <code>.env.example</code> and change its name to <code>.env</code> and change the <code>DB_DATABASE=laravel</code> to <code>DB_DATABASE=api_project</code></p></li>
-<br/>
-<li><p>To Generate a Key: </p><code><b>php artisan key:generate</b></code></li>
-<br/>
-<li><p>To install important package: </p><code><b>composer install</b></code></li>
-<br/>
-<li><p>To migrate the Database: </p><code><b>php artisan migrate</b></code><p id="danger" style="color: red;font-size:12px">Note that: you should have a Database with name "api-project" in your server</p></li>
-<br/>
-<li><p>To Seed your DB with initial data: (option)</p><code><b>php artisan db:seed</b></code></li>
-<br/>
-<li><p>To Run the Server:</p><code><b>php artisan serve</b></code></li>
+<li>Save the project in a folder named <b>"Online-Courses"</b>.</li>
+<li>Open the command line interface and navigate to the folder that contains the project. You can do this by using the cd command. For example: <b><code>cd path/to/Online-Courses</code></b></li>
+<li>Copy the ".env.example" file and rename it to "<b>.env</b>" You can do this manually or by using the command: <code>cp .env.example .env</code></li>
+<li><p>Open the <u>.env</u> file and update the DB_DATABASE value from "laravel" to <b>"api_project"</b> to match your desired database name.</p></li>
+<li><p>Generate an application key by running the following command: <code>php artisan key:generate</code></li>
+<li><p>Install the necessary dependencies by running the following command:</p><code><b>composer install</b></code></li>
+<li><p>Migrate the database by running the migration command:</p><code><b>php artisan migrate</b></code><p style="color: red;font-size:11px">Note: Ensure that you have a database named "api_project" created on your server before running this command.</p></li>
+<li><p>Optionally, you can seed the database with initial data by running the following command:</p><code><b>php artisan db:seed</b></code></li>
+<li><p>Finally, start the server by running the following command:</p><code><b>php artisan serve</b></code></li>
 </ul>
 
-### To More information:
-#### [facebook](https://www.facebook.com/mekdad.ghazal.7/) or [twitter](https://twitter.com/mekdad_gh)
-#### Follow me on: [instagram](https://www.instagram.com/itz_mekdad/)
+#### Please note that for more detailed information or if you have any specific questions, you can reach out to me on:
+#### [facebook](https://www.facebook.com/mekdad.ghazal.7/) or [linkedIn](www.linkedin.com/in/mekdad-ghazal-it)
