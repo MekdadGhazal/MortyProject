@@ -321,16 +321,16 @@ class CourseController extends Controller
                 'readed_notifications' => AddVideoNotifyResource::collection($readed_notifications),
             ];
 
-            if(auth()->user()->admin){
-                $data['new_registration'] = User::find($user_id)
-                    ->unreadnotifications
-                    ->where('type', 'App\Notifications\CreateUser');
-
-                $data['old_registration'] = User::find($user_id)
-                    ->notifications
-                    ->where('type', 'App\Notifications\CreateUser')
-                    ->whereNotNull('read_at');
-            }
+//            if(auth()->user()->admin){
+//                $data['new_registration'] = User::find($user_id)
+//                    ->unreadnotifications
+//                    ->where('type', 'App\Notifications\CreateUser');
+//
+//                $data['old_registration'] = User::find($user_id)
+//                    ->notifications
+//                    ->where('type', 'App\Notifications\CreateUser')
+//                    ->whereNotNull('read_at');
+//            }
 
             return $this->successResponse($data);
         }catch (\Exception $e){

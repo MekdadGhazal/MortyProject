@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Courses;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseCommentResource;
+use App\Http\Resources\ReplayResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
 use App\Models\CourseComment;
@@ -104,7 +105,7 @@ class CourseCommentController extends Controller
         $data = [];
         foreach ($replies->replies->sortByDesc('created_at') as $result){
             $data[] = [
-                'replay' => $result,
+                'replay' => new ReplayResource($result),
                 'user' => new UserResource(\App\Models\User::find($result->user_id))
             ];
         }
@@ -140,12 +141,15 @@ class CourseCommentController extends Controller
             ]);
 
             $data = [
-                'comment_id' => $comment_id,
-                'content' => $request->replay,
-                'replay' => 0,
-                'repairs' =>[],
-                'id' => $comment->id,
-                'created_at' =>$comment ->created_at->diffForHumans(),
+                'replay'=>[
+                    'id' => $comment->id,
+                    'content' => $request->replay,
+                    'comment_id' => $comment_id,
+                    'user_id' => auth()->user()->id,
+                    'created_at' =>$comment ->created_at->diffForHumans(),
+                    'replay' => 0,
+                    'repairs' =>[],
+                ],
                 'user' => new UserResource(auth()->user()),
             ];
             return $this->createResponse($data);

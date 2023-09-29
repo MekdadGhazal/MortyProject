@@ -198,10 +198,10 @@ class AdminController extends Controller
                 ->where('read_at','!=' , null);
 
         $data = [
-            'notification_count' => $notifications_count,
+//            'notification_count' => $notifications_count,
             'unread_notifications_count' => $unread_notifications_count,
-            'unread_notifications' => $unread_notifications,
-            'readed_notifications' => $readed_notifications
+            'unread_notifications' => UserNotify::collection($unread_notifications),
+            'readed_notifications' => UserNotify::collection($readed_notifications)
         ];
         return $this->successResponse($data);
     }

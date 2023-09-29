@@ -6,9 +6,11 @@ use App\Http\Controllers\API\ApiTrait\FunctionTemplateTrait;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
 use App\Http\Controllers\API\Courses\CourseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\UserResource;
 use App\Models\Course;
 use App\Models\Event;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,9 +43,15 @@ class UserController extends Controller
             'joinedCourses' => $list,
             ];
 
+        $userId = auth()->user()->id;
         if (auth()->user()->admin) {
-            $create = Course::where('teacher_id', auth()->user()->id)->count() ? Course::where('teacher_id', auth()->user()->id)->get() : 'No Created course yet.';
+            $create = Course::where('teacher_id', $userId)->count() ? CourseResource::collection(Course::where('teacher_id', $userId)->get()) : 'No Created course yet.';
+            $posts = Post::where('user_id', $userId)->count() ?Post::where('user_id', $userId)->get() : 'No Created Posts yet.';
             $data['createdCourses'] = $create;
+            $data['createdPost'] = $posts;
+        }else{
+            $data['createdCourses'] ='You are not an Admin to create courses.';
+            $data['createdPost'] = 'You are not an Admin to create posts.';
         }
         return $this->successResponse($data);
     }

@@ -52,12 +52,15 @@ class ReplayPostController extends Controller
             ]);
 
             $data = [
-                'comment_id' => $comment_id,
-                'content' => $request->replay,
-                'replay' => 0,
-                'repairs' =>[],
-                'id' => $comment->id,
-                'created_at' =>$comment ->created_at->diffForHumans(),
+                'replay' =>[
+                    'id' => $comment->id,
+                    'content' => $request->replay,
+                    'comment_id' => $comment_id,
+                    'user_id' =>auth()->user()->id,
+                    'replay' => 0,
+                    'repairs' =>[],
+                    'created_at' =>$comment ->created_at->diffForHumans(),
+                ],
                 'user' => new UserResource(auth()->user()),
             ];
 
