@@ -6,6 +6,7 @@ use App\Http\Controllers\API\ApiTrait\FunctionTemplateTrait;
 use App\Http\Controllers\API\ApiTrait\ResponseTrait;
 use App\Http\Controllers\API\Courses\CourseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\UserNotify;
 use App\Http\Resources\UserResource;
 use App\Models\Admin;
@@ -54,7 +55,7 @@ class AdminController extends Controller
             ];
 
             if ($user->admin) {
-                $create = Course::where('teacher_id', $tempId)->count() ? Course::where('teacher_id', $tempId)->get() : 'No Created course yet.';
+                $create = Course::where('teacher_id', $tempId)->count() ? CourseResource::collection(Course::where('teacher_id', $tempId)->get()) : 'No Created course yet.';
                 $data['createdCourses'] = $create;
             }
 

@@ -85,5 +85,9 @@ To start the project, please follow these steps:
 <li><p>Finally, start the server by running the following command:</p><code><b>php artisan serve</b></code></li>
 </ul>
 
-#### Please note that for more detailed information or if you have any specific questions, you can reach out to me on:
-#### [facebook](https://www.facebook.com/mekdad.ghazal.7/) or [linkedIn](https://www.linkedin.com/in/mekdad-ghazal-it/)
+
+#### Note that:
+for more detailed information or if you have any specific questions,
+you can reach out to me on:
+#### [Facebook](https://www.facebook.com/mekdad.ghazal.7/) or [Linked-In](https://www.linkedin.com/in/mekdad-ghazal-it/)
+"# Bot-Generator, Designed By Mekdad Ghazal" 

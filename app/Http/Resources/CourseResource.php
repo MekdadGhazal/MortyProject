@@ -29,6 +29,7 @@ class CourseResource extends JsonResource
         return [
             'id'=> $this->id,
             'teacher'=> User::find($this->teacher_id)->name,
+            'teacher_id'=> $this->teacher_id,
             'title' => $this->title,
             'description' => $this->description,
             'level' => $this->level,
